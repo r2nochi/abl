@@ -1,0 +1,73 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: ${self:custom.serviceName}
+frameworkVersion: "2"
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage,'DESA'}
+  region: ${self:custom.regions.code.${opt:stage}}
+  timeout: 60
+  memorySize: 1024
+  versionFunctions: false
+  logRetentionInDays: 3
+  role: ${self:custom.role.${opt:stage}}
+  tracing:
+    lambda: true
+  tags: # Tags para  los lambdas
+    NAME: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN
+    ENTORNO: ${self:provider.stage}
+    ESTADO_OPERACION: PROYECTO
+    PROYECTO: AGENTE BITCOIN
+  vpc: ${self:custom.vpc.${opt:stage}}
+  apiGateway:
+    apiKeys:
+      - ${self:custom.x-api-key}
+  environment:
+    SECRET_KEY: ${self:custom.SECRET_KEY}
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+    RDS_HOST: ${self:custom.RDS_HOST}
+    RDS_USERNAME: ${self:custom.RDS_USERNAME}
+    RDS_USER_PWD: ${self:custom.RDS_USER_PWD}
+    RDS_DB_NAME: ${self:custom.RDS_DB_NAME}
+
+custom:
+  functionsFile: ${opt:functionsFile, 'cloud'}
+  role: ${file(./config/serverless/common-custom-config.yaml):role}
+  vpc: ${file(./config/serverless/common-custom-config.yaml):vpc}
+  accountId: ${file(./config/serverless/common-custom-config.yaml):accountId.${opt:stage}}
+  name: AGENTE-BITCOIN
+  serviceName: ${self:custom.name}-APP
+  regions:
+    code: ${file(./config/serverless/common-custom-config.yaml):regions.code}
+    abrev: ${file(./config/serverless/common-custom-config.yaml):regions.abrev}
+  archLayerEnv: ${file(./config/serverless/common-custom-config.yaml):archLayerEnv}
+  layerMAIN: ${file(./config/serverless/common-custom-config.yaml):LAYERS.MAIN.${opt:stage}}
+  x-api-key: ${file(./config/serverless/common-custom-config.yaml):x-api-key.${opt:stage}}
+  SECRET_KEY: ${file(./config/serverless/common-custom-config.yaml):SECRET_KEY.${opt:stage}}
+  RDS_HOST: postgresql-develop.c8glzpkwykbs.us-east-1.rds.amazonaws.com
+  RDS_USERNAME: develop
+  RDS_USER_PWD: Develop.*
+  RDS_DB_NAME: desa
+plugins:
+  - serverless-offline
+package:
+  individually: true
+  patterns:
+  - '!node_modules/**'
+  - '!src/**'
+  - '!config/**'
+
+functions: ${file(config/serverless/functions.${self:custom.functionsFile}.yaml)}

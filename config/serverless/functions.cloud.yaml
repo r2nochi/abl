@@ -1,0 +1,127 @@
+authorizerFunction:
+  handler: src/authorizerFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}AUTHORIZER
+  description: funcion para autenticar usuarios
+  package:
+    patterns:
+      - 'src/authorizerFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+authenticationFunction:
+  handler: src/authenticationFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}AUTH
+  description: autenticacion interna, genera y retorna token
+  events:
+    - http:
+        path: agente-bitcoin/authentication
+        method: post
+        private: true
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/authenticationFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+userLoginFunction:
+  handler: src/userLoginFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN2
+  description: login
+  events:
+    - http:
+        path: agente-bitcoin/user/login
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/userLoginFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+userRegisterFunction:
+  handler: src/userRegisterFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN3
+  description: register
+  events:
+    - http:
+        path: agente-bitcoin/user/register
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/userRegisterFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+cargarSaldoSolesFunction:
+  handler: src/cargarSaldoSolesFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN4
+  description: cargarSaldoSoles
+  events:
+    - http:
+        path: agente-bitcoin/user/cargar_saldo_soles
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/cargarSaldoSolesFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+visitasFunction:
+  handler: src/visitasFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN5
+  description: visitas
+  events:
+    - http:
+        path: agente-bitcoin/user/visitas
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/visitasFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+validaCorreoFuncion:
+  handler: src/validaCorreoFuncion/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN6
+  description: validaCorreo
+  events:
+    - http:
+        path: agente-bitcoin/user/validaCorreo
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/validaCorreoFuncion/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2
+
+reenviarCodigoFunction:
+  handler: src/reenviarCodigoFunction/lambda.handle
+  name: ${self:custom.regions.abrev.${opt:stage}}COM${opt:stage}BITCOIN7
+  description: reenviarCodigo
+  events:
+    - http:
+        path: agente-bitcoin/user/reenviarCodigo
+        method: post
+        private: true
+        authorizer: authorizerFunction
+        cors: ${file(config/serverless/http-cors.yml)}
+  package:
+    patterns:
+      - 'src/reenviarCodigoFunction/**'
+  layers:
+    - arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:layer:${self:provider.stage}-db-connector:2

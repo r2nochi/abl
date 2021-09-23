@@ -1,0 +1,51 @@
+# Used by AWS Lambda layers
+archLayerEnv:
+  DESA: DEV
+  TEST: TEST
+  PROD: PROD
+
+#tag ambientes
+ENTORNO_TAG:
+  DESA: DESA
+  TEST: TEST
+  PROD: PROD
+
+# Regions code and abbreviation
+regions:
+  code:
+    DESA: us-east-1
+  abrev:
+    DESA: UE1
+
+LAYERS:
+  MAIN:
+    DESA: UE1DESA:1
+
+# Account id
+accountId:
+  DESA: 102043531466
+
+x-api-key:
+  DESA: apikeyDESA
+  PROD: apikeyPROD
+
+# Lambda's role
+role:
+  DESA: arn:aws:iam::${self:custom.accountId}:role/desarrollo
+
+SECRET_KEY:
+  DESA: +!M%#<F6B/783qL7Kf[OAi"/cq%I!;`T.Fzb8x@@:vPU|,dAebXq#=p_h=;'L&
+  PROD: Zc[G5,?s|X\?-GiG{0OupAq2]/"iKu#PJQ@4C?re]PR/EI-2i#Ajlf[jHtpp=/T
+
+# VPCs
+vpc:
+  DESA:
+    securityGroupIds:
+      - sg-1b45aa04
+    subnetIds:
+      - subnet-998ce0a8
+      - subnet-603f2d6e
+      - subnet-b687a097
+      - subnet-9d7f27fb
+      - subnet-0d3e1b52
+      - subnet-6139d12d
